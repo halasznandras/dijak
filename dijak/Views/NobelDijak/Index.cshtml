@@ -1,0 +1,92 @@
+﻿@model dijak.Models.NobeldijakKeres
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    ViewData["Title"] = "nobeldijak/Index";
+}
+
+<h1>Nobel díjak</h1>
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <p>
+        <a asp-action="Create">Új bejegyzés</a>
+    </p>
+}
+<div class="pt-xxl-5">
+    <form>
+        <div class="input-group mb-3">
+            <input type="file" class="form-control" id="inputGroupFile02">
+            <label class="input-group-text" for="inputGroupFile02">Feltöltés</label>
+        </div>
+    </form>
+</div>
+<div class="pt-xxl-5">
+    <form title="Keresés">
+        <div style="text-align: left; padding: 10px">
+            <h1>Keresés</h1>
+        </div>
+        <div class="form-row gx-5 align-items-lg-stretch">
+            <div class="col-6 p-3 bg-light">
+                <label asp-for="Ev">Év</label>
+                <input type="number" asp-for="Ev" class="form-control">                
+            </div>
+            <div class="form-floating col-6 p-3 bg-light">
+                <label asp-for="Nev" class="form-label">Név</label>
+                <input asp-for="Nev" class="form-control" id="floatingInput" placeholder="Díjazott neve">                
+            </div>
+            <div class="col-6 p-3 bg-light">
+                <select asp-for="Tipus" asp-items="Model.Tipusok" class="form-select" aria-label=".form-select-lg example">
+                    <option selected value="">Összes</option>
+                    <option value="Szervezetek">Szervezetek</option>
+                </select>
+            </div>
+            <div class="col-6 p-3 bg-light">
+                <button type="submit" class="btn btn-warning">Keres</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div style="text-align: left; padding: 10px">
+    <h1>Adatok</h1>
+</div>
+<div class="pt-xxl-5">
+    <div class="row h3">
+        <div class="col-2">Év</div>
+        <div class="col-3">Típus</div>
+        <div class="col-sm">Név</div>
+        <div class="col-sm">Módositás</div>
+    </div>
+</div>
+
+@foreach (var item in Model.NobelDij)
+{
+<div class="pt-xxl-5">
+    <div class="row">
+        <div class="col-2">@Html.DisplayFor(modelItem => item.Evszam)</div>
+        <div class="col-3">@Html.DisplayFor(modelItem => item.Tipus)</div>
+        <div class="col-sm">
+            @Html.DisplayFor(modelItem => item.KeresztNev)
+            @Html.DisplayFor(modelItem => item.VezetekNev)
+        </div>
+        <div class="btn-group">            
+            <div class="col-sm">
+                <button class="btn btn-default" type="button">
+                    <a asp-action="Details" asp-route-id="@item.Id">Részletek</a>
+                </button>
+                <button class="btn btn-default" type="button">
+                    @if (SignInManager.IsSignedIn(User))
+                    {<a asp-action="Edit" asp-route-id="@item.Id">Szerkeszt</a>}
+                </button>
+                <button class="btn btn-default" type="button">
+                    @if (SignInManager.IsSignedIn(User))
+                    {<a asp-action="Delete" asp-route-id="@item.Id">Töröl</a>}
+                </button>
+</div>                        
+        </div>
+        </div>
+        <div class="dropdown-divider"></div>
+    </div>
+}
